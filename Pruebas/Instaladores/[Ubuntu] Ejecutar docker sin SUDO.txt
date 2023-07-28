@@ -1,0 +1,7 @@
+1. Agregar usuario actual al grupo 'docker':
+
+	sudo usermod -aG docker $USER
+	
+2. Activar cambios sin necesidad de cerrar sesión:
+
+	newgrp docker

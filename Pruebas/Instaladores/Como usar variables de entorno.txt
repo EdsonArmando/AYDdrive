@@ -1,0 +1,6 @@
+export VAR="value"
+
+export: el comando utilizado para crear la variable.
+VAR: el nombre de la variable.
+= indica que la siguiente sección es el valor.
+«value»: el valor real

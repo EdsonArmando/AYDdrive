@@ -1,0 +1,16 @@
+version: "3.3"
+services:
+#Servicios
+  servicio-angular:
+       container_name: "Frontend"
+       image: selvinlp/serviciofrontend:latest
+       restart: always
+       networks:
+        - "red_ayd2_fr"
+       build: .
+       ports:
+          - "4200"
+
+networks:
+  red_ayd2_fr:
+    driver: "bridge"

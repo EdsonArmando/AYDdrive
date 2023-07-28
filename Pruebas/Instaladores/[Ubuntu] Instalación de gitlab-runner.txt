@@ -1,0 +1,25 @@
+Instalar GitLab Runner
+Para ubuntu:
+
+Add GitLab’s official repository:
+
+# For Debian/Ubuntu/Mint
+curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash
+
+ (todo junto)
+
+
+Instale la última versión de GitLab Runner:
+
+#For Debian/Ubuntu/Mint
+sudo apt-get install gitlab-runner
+
+#Registar Runner
+sudo gitlab-runner register
+(Ingresar información de settings CI/CD, recordar indicar el tag)
+
+#Agregar permisos para que gitlab-runner pueda ejecutar Docker
+sudo usermod -aG docker gitlab-runner
+sudo service docker restart
+https://stackoverflow.com/questions/19383887/how-to-use-sudo-in-build-script-for-gitlab-ci
+sudo usermod -a -G sudo gitlab-runner

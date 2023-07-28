@@ -1,0 +1,13 @@
+#inputUpload {
+    display: none;
+}
+
+.custom-file-upload {
+    cursor: pointer;
+    font-size: inherit;
+    color: #0c090d;
+}
+
+.custom-file-upload:hover {
+    text-decoration: underline;
+}

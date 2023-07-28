@@ -1,0 +1,107 @@
+stages: 
+  - test_pruebas
+  - kuberentes-stage
+
+unit-test:   
+  stage: test_pruebas
+  only: 
+    - "develop"
+  tags:
+    - "ayd2_test"
+  before_script:
+    - echo "Ejecutando pruebas unitarias ... "
+    - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+    - docker-compose down -v --rmi all
+    - docker-compose up --build -d
+    - cd ./backend/Test
+    - sudo apt-get install -y nodejs 
+    - sudo apt-get install -y npm
+    - npm i
+  script:
+    - echo "Ejecutando ... "
+    - npm test
+  after_script:
+    - docker-compose push
+    - cd ./
+    - echo "Terminando pruebas unitarias ... "
+
+functional-test:   
+  stage: test_pruebas
+  only: 
+    - "develop"
+  tags:
+    - "ayd2_test"
+  before_script:
+    - cd ./angular-app
+    - docker-compose down -v --rmi all
+    - docker-compose up --build -d
+    - docker pull selenium/hub
+    #- docker run -d -p 4444:4444 -p 7900:7900 --shm-size="2g" selenium/standalone-firefox:4.0.0-20211013
+    #- docker build -t seleniumcont:latest ../Pruebas/Selenium
+    #- docker run --rm -p 4500:4500 seleniumcont:latest
+    #- docker rmi seleniumcont
+    - cd ../Pruebas/Selenium
+    - python3 prueba.py
+    - echo "Ejecutando pruebas funcionales ... "
+  script:
+    - echo "Ejecutando ... "
+  after_script:
+    - docker image push selvinlp/serviciofrontend
+    - cd ./
+    - echo "Terminando pruebas funcionales ... "
+
+deploy-job-frontend:      
+  stage: kuberentes-stage  
+  only: 
+    - "main"
+  tags:
+    - "ayd2_test"
+  before_script:
+    - cd ./angular-app
+    - docker image rmi selvinlp/serviciofrontend:latest -f
+    - docker pull selvinlp/serviciofrontend:latest
+  script:    
+    #Debe estar dentro del directorio angular-app y ya deben estar creadas las imagenes para que funcione.
+    - echo "Ejecutando deploy Frontend Kubernetes y LoadBalancer ... "
+    - gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project ayd2-327723
+    - kubectl get services
+    - kubectl delete svc aydrive-front1
+    #- kubectl delete svc aydrive-front2
+    - kubectl delete deployments load-balancer-front-aydrive
+
+    - kubectl apply -f load-balancer-frontAYD2.yaml
+    - kubectl expose deployment load-balancer-front-aydrive --type=LoadBalancer --name=aydrive-front1
+    #- kubectl expose deployment load-balancer-front-aydrive --type=LoadBalancer --name=aydrive-front2
+    - kubectl get svc
+  after_script:
+    #- docker-compose push  
+    - cd ./
+    - echo "Terminando deploy frontend ... "
+
+deploy-job-backend:      
+  stage: kuberentes-stage  
+  only: 
+    - "main"
+  tags:
+    - "ayd2_test"
+  before_script:
+    - docker-compose down -v --rmi all
+    - docker-compose pull
+    - cd ./backend
+  script:   
+    #Debe estar dentro del directorio backend y ya deben estar creadas las imagenes para que funcione.
+    - echo "Ejecutando deploy backend Kubernetes y LoadBalancer ... "
+    - gcloud container clusters get-credentials cluster-2 --zone us-central1-c --project ayd2-327723
+    - kubectl get services
+    - kubectl delete svc aydrive-backend1
+    #- kubectl delete svc aydrive-backend2
+    - kubectl delete deployments load-balancer-backend-aydrive
+
+    - kubectl apply -f load-balancer-backendAYD2.yaml
+    - kubectl expose deployment load-balancer-backend-aydrive --type=LoadBalancer --name=aydrive-backend1 --load-balancer-ip=35.232.111.58
+    #- kubectl expose deployment load-balancer-backend-aydrive --type=LoadBalancer --name=aydrive-backend1 --load-balancer-ip=34.134.217.79
+    - kubectl get svc
+  after_script:
+    #- docker-compose push 
+    - cd ./
+    - echo "Terminando deploy backend ... "

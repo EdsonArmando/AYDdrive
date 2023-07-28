@@ -1,0 +1,12 @@
+gcloud container clusters get-credentials cluster-2 --zone us-central1-c --project ayd2-327723
+kubectl get services
+kubectl delete svc aydrive-backend1
+kubectl delete svc aydrive-backend2
+kubectl delete deployments load-balancer-backend-aydrive
+
+kubectl apply -f load-balancer-backendAYD2.yaml
+kubectl expose deployment load-balancer-backend-aydrive --type=LoadBalancer --name=aydrive-backend1 --load-balancer-ip=35.232.111.58
+kubectl expose deployment load-balancer-backend-aydrive --type=LoadBalancer --name=aydrive-backend1 --load-balancer-ip=34.134.217.79
+kubectl get svc
+
+// De aqui para adelante van los otros comandos

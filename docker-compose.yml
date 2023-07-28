@@ -1,0 +1,76 @@
+version: "3.3"
+services:
+#Servicios
+  servicio_usuarios:
+      container_name: "Usuarios"
+      image: selvinlp/serviciousuarios:latest
+      restart: always
+      networks:
+        - "red_ayd2"
+      build: ./backend/Usuarios  
+      ports:
+        - "3000" 
+
+  servicio_crear_carpeta:
+      container_name: "CrearCarpeta"
+      image: selvinlp/serviciocrearcarpeta:latest
+      restart: always
+      networks:
+        - "red_ayd2"
+      build: ./backend/Carpetas/Crear  
+      ports:
+        - "3001"
+
+  servicio_eliminar_carpeta:
+      container_name: "EliminarCarpeta"
+      image: selvinlp/servicioeliminarcarpeta:latest
+      restart: always
+      networks:
+        - "red_ayd2"
+      build: ./backend/Carpetas/Eliminar  
+      ports:
+        - "3002" 
+
+  servicio_editar_carpeta:
+      container_name: "EditarCarpeta"
+      image: selvinlp/servicioeditarcarpeta:latest
+      restart: always
+      networks:
+        - "red_ayd2"
+      build: ./backend/Carpetas/Editar  
+      ports:
+        - "3003" 
+
+  servicio_papelera:
+      container_name: "Papelera"
+      image: selvinlp/serviciopapelera:latest
+      restart: always
+      networks:
+        - "red_ayd2"
+      build: ./backend/Papelera
+      ports:
+        - "3004"
+
+  servicio_archivos:
+      container_name: "Archivos"
+      image: selvinlp/servicioarchivos:latest
+      restart: always
+      networks:
+        - "red_ayd2"
+      build: ./backend/Archivos
+      ports:
+        - "3005"
+
+  servicio_middleware:
+      container_name: "Middleware"
+      image: selvinlp/serviciomiddleware:latest
+      restart: always
+      networks:
+        - "red_ayd2"
+      build: ./backend/middleware  
+      ports:
+        - "3010"
+    
+networks:
+  red_ayd2:
+    driver: "bridge"

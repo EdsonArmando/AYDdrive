@@ -1,0 +1,44 @@
+Link de referencia: https://blog.deiser.com/es/primeros-pasos-con-ansible
+
+1. Ejecutar lo siguiente en la máquina de desarrollo y en las máquinas de producción:
+
+sudo apt-get install software-properties-common
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install ansible
+
+2. EN MÁQUINA DE DESARROLLO: Crear/modificar el fichero /etc/ansible/hosts donde vamos a indicar los distintos nodos sobre los cuales vamos a realizar las tareas automáticas. En nuestro caso, vamos a indicar el nodo que tenemos disponible para las pruebas:
+
+sudo nano /etc/ansible/hosts 
+
+3.  Escribir lo siguiente dentro del archivo 'hosts':
+Nota: produccion es el nombre del grupo
+[produccion]
+IP_VIRTUAL_PROD_1
+IP_VIRTUAL_PROD_2
+
+
+4. Generamos la llave pública y privada del servidor de desarrollo con el siguiente comando:
+
+ssh-keygen
+
+5. Damos Enter a todo y buscamos la ubicación de las llaves, ejemplo:
+
+# /home/graciasguugle_sopes2usac/.ssh/id_rsa (llave privada)
+# /home/graciasguugle_sopes2usac/.ssh/id_rsa.pub (llave pública)
+
+
+6. Vinculamos la llave pública del servidor de desarrollo con las máquinas de producción como se vio en clase.
+
+7. Creamos una variable en gitlab CI/CD con nombre SSH_PRIVATE_KEY y en valor colococamos la llave PRIVADA del servidor de desarrollo (../.ssh/id_rsa)
+
+8. Ejecutamos el siguiente comando para verificar que exista comunicación entre las máquinas:
+
+ansible all -m ping -u {Nombre_Usuario_Produccion}
+
+9. Generamos la llave pública y privada para cada servidor de producción igual que en el Paso 4.
+
+10. Creamos una variable en gitlab CI/CD con nombre SSH_KNOWN_HOSTS y en valor colocamos la llave PÚBLICA de cada uno de los servidores de producción (../.ssh/id_rsa.pub), cada llave se separada con un Enter.
+
+https://gitlab.com/gitlab-examples/ssh-private-key/
+https://docs.gitlab.com/ee/ci/ssh_keys/#verifying-the-ssh-host-keys

@@ -1,0 +1,36 @@
+peticion post a localhost:3010?api=xxx&id=xxx
+
+
+Cambiar las xxx respectivas por los datos de la tabla
+--------------------------------------------------------------
+| api      | id         | equivalente                        |
+--------------------------------------------------------------
+| usuarios | crear      | /crearUsuario                      |
+|          | login      | /login                             |
+|          | actualizar | /actualizarPerfil/:id              |
+|          | generar    | /generarCodigo/:id                 |
+|          | verificar  | /verificarCodigo                   |
+--------------------------------------------------------------
+| carpetas | crear      | /crearCarpeta                      |
+|          | datos      | /datosCarpeta/:propietario/:nombre |
+|          | editar     | /editarCarpeta                     |
+|          | obtener    | /obtenerCarpetas/:propietario      |
+|          | eliminar   | /eliminarCarpeta/:id               |
+--------------------------------------------------------------
+| archivos | subir      | /subirArchivo                      |
+|          | crear      | /createArchivo                     |
+|          | listado    | /ListadoArchivos                   |
+|          | especifico | /archivoEspecifico                 |
+|          | eliminar   | /borrarArchivo                     |
+|          | mover      | /MoverArchivo                      |
+|          | enviar     | /enviarContenido                   |
+--------------------------------------------------------------
+| papelera | mover      | /moverAPapelera/:id                | 
+|          | eliminar   | /eliminarCompleto/:id              |
+|          | restaurar  | /restaurarArchivo/:id              |
+|          | obtener    | /obtenerPapelera/:id               |
+--------------------------------------------------------------
+
+enviar el body como lo hacen en lo tienen ya solo agregando siempre la propiedad
+ruta: "ruta original del endpoint" y si no se enviaba nada solo enviar un json con 
+esta propiedad

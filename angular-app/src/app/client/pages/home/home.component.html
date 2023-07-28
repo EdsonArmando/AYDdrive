@@ -1,0 +1,208 @@
+<div *ngIf="loading">
+    <app-navbar></app-navbar>
+    <section class="jumbotron text-center">
+        <div class="container">
+        <h1 id="tituloaydrive" *ngIf="root" class="jumbotron-heading">AyDrive</h1>
+        <p *ngIf="root" class="lead text-muted">Almacene cada uno de sus archivos. Acceda a ellos en cualquier momento y lugar, ya sea desde sus dispositivos móviles o de escritorio. Controle la forma en que se comparten sus archivos.</p>
+        <p>
+            <button id="crearcarpetaid" *ngIf="papelera" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Crear carpeta
+            </button>
+            <button *ngIf="!root" type="button" class="btn btn-primary" (click)="back()">
+                Regresar Inicio
+            </button>
+            <label id="subirarchivoid" for="inputUpload" class="btn btn-secondary m-2" *ngIf="papelera">Subir Archivo</label>
+            <input id="inputUpload" type="file"  (change)="creararchivo($event)"/>
+            <button id="abrirnombre" type="button" style="background-color: Transparent;
+            background-repeat:no-repeat;
+            border: none;
+            cursor:pointer;
+            overflow: hidden;
+            outline:none;" data-toggle="modal" data-target="#nameModal"></button>
+        </p>
+        <span *ngIf="!root" style="font-size: xx-large;">{{globalName}}</span>          
+        
+        <!-- Modal Create-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title" id="exampleModalLabel">Crear carpeta</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <input class="w-100" placeholder="Nombre" type="text" name="namecarpeta" [(ngModel)]="name" autocomplete="off">
+                </div>
+                <div class="modal-footer">
+                <button id="closeModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button id="modelcarpetaguardar" type="button" class="btn btn-primary" (click)="guardarCarpeta()">Guardar</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Modal Edit-->
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title" id="exampleModalLabel">Editar carpeta</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <input class="w-100" placeholder="Nombre" type="text" name="name" [(ngModel)]="nameEdit" autocomplete="off">
+                </div>
+                <div class="modal-footer">
+                <button id="closeModalEdit" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" (click)="editarCarpeta()">Editar</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        </div>
+    </section>
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="card mb-4 box-shadow align-items-center" style="width: fit-content;" *ngIf="papelera && root">
+                <img class="card-img-top" src="https://pngimage.net/wp-content/uploads/2018/06/papelera-de-reciclaje-icono-png-1.png" style="width: 100px !important; margin-top: 15px;" alt="Card image cap">
+                <div class="card-body" style="display: grid;">
+                    <p class="card-text font-weight-bold">Propiedades</p>
+                    <span>Nombre: Papelera de reciclaje</span>
+                    <br>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group">
+                        <button type="button" id="papeleraid" class="btn btn-sm btn-outline-secondary" (click)="verPapelera()">Ver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4" *ngFor="let item of listCarpetas;">
+                    <div class="card mb-4 box-shadow align-items-center">
+                        <img class="card-img-top" src="https://image.flaticon.com/icons/png/512/539/539348.png" height="100px" style="width: 100px !important;" alt="Card image cap">
+                        <div class="card-body" style="display: grid;">
+                            <p class="card-text font-weight-bold">Propiedades</p>
+                            <span>Nombre: {{item.nombre}}</span>
+                            <span>Creacion: {{item.fechaCreacion}}</span>
+                            <div *ngFor="let archivosCant of cantidadarchivos;">
+                                <span *ngIf="archivosCant.nombre == item.nombre">Cantidad de archivos: {{archivosCant.cantidad}}</span>  
+                            </div>
+                            <br>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="verCarpeta(item)">Ver</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#editModal" (click)="setIdEdit(item.nombre)">Editar</button>
+                                <button id="eliminarcarpetaid" type="button" class="btn btn-sm btn-outline-secondary" (click)="eliminarCarpeta(item.id)">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+        <!-- Modal Propiedades-->
+        <div class="modal fade" id="propetiesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title" id="exampleModalLabel" >Propiedades</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                      <div class="form-group">
+                        <label for="recipient-name" class="col-form-label"><b>Nombre:</b></label>
+                        <input class="w-100"  type="text" name="Nombre"  [disabled]="true" [(ngModel)]="archivo_propiedades.NOMBRE" autocomplete="off">
+                    </div>
+                      <div class="form-group">
+                        <label for="recipient-name" class="col-form-label"><b>Fecha de Creacion:</b></label>
+                        <input class="w-100"  type="text" name="FechaCre" [disabled]="true" [(ngModel)]="archivo_propiedades.FECHA_CREACION" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label"><b>URL:</b></label>
+                        <input class="w-100"  type="text" name="Urldes" [disabled]="true" [(ngModel)]="archivo_propiedades.URL" autocomplete="off">
+                    </div>
+                    </form>
+                  </div>
+                <div class="modal-footer">
+                <button id="closepropetiesModal" type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        
+        <!-- Modal buscar carpeta-->
+        <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title" id="exampleModalLabel">Carpeta destino</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <input class="w-100" placeholder="Nombre" type="text" name="name" [(ngModel)]="carpeta_destino" autocomplete="off">
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-primary"  data-dismiss="modal" (click)="mover_archivomodal()">Mover Carpeta</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Modal Nombre Archivo-->
+        <div class="modal fade" id="nameModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 id="NombredelArchivoid"class="modal-title" id="exampleModalLabel">Nombre del Archivo</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <input class="w-100" placeholder="Nombre" type="text" name="name" id="inputnombrearchivoid" [(ngModel)]="nombrefinal_archivo" autocomplete="off">
+                </div>
+                <div class="modal-footer">
+                <button id="botonguardarmodal" type="button" class="btn btn-primary"  data-dismiss="modal" (click)="updatename_file()">Guardar</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+            <!-- For para las tarjetas de archivos -->
+            <div *ngFor="let archivo of listArchivos" class="col-md-4">
+                <div class="card mb-4 box-shadow align-items-center">
+                    <img class="card-img-top" src="data:image/png;base64,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" height="100px" style="width: 100px !important;" alt="Card image cap">
+                    <div class="card-body" style="display: grid;">
+                        <p class="card-text font-weight-bold" data-toggle="modal" data-target="#propetiesModal" (click)="propiedades_archivo(archivo.id)">Propiedades</p>
+                        <span data-toggle="modal" data-target="#propetiesModal" (click)="propiedades_archivo(archivo.id)">Nombre: {{archivo.NOMBRE}}</span>
+                        <span data-toggle="modal" data-target="#propetiesModal" (click)="propiedades_archivo(archivo.id)">Creacion: {{archivo.FECHA_CREACION}}</span>
+                        <br>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <a class="btn btn-sm btn-outline-secondary" href="{{archivo.URL}}">Abrir</a>
+                                <button *ngIf="mover == 'Restaurar'" type="button" class="btn btn-sm btn-outline-secondary" (click)="restaurar(archivo.id)">{{ mover }}</button>
+                                <button *ngIf="mover == 'Mover'" type="button" class="btn btn-sm btn-outline-secondary"  data-toggle="modal" data-target="#searchModal" (click)="mover_archivo(archivo.id)">{{ mover }}</button>
+                                <button id="moverpapeleraid" type="button" class="btn btn-sm btn-outline-secondary" (click)="moverAPapelera(archivo.id)">{{ eliminar }}</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="enviarContenido(archivo.id)">Correo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

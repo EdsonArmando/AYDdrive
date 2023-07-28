@@ -1,0 +1,10 @@
+gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project ayd2-327723
+kubectl get services
+kubectl delete svc aydrive-front1
+kubectl delete svc aydrive-front2
+kubectl delete deployments load-balancer-front-aydrive
+
+kubectl apply -f load-balancer-frontAYD2.yaml
+kubectl expose deployment load-balancer-front-aydrive --type=LoadBalancer --name=aydrive-front1
+kubectl expose deployment load-balancer-front-aydrive --type=LoadBalancer --name=aydrive-front2
+kubectl get svc
